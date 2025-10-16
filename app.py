@@ -1,7 +1,13 @@
 import sqlite3
 import random
 from flask import Flask, session, render_template, request, g
-
+try:
+  import lightrun
+  lightrun.enable(
+      company_key='47b41d7b-c8d7-4ffd-93e5-c944fc2c2daf',
+      com_lightrun_server='https://app.lightrun.com/')
+except ImportError as e:
+      print("Error importing Lightrun: ", e)
 app = Flask(__name__)
 app.secret_key = "select_a_COMPLEX_secret_key_please"
 app.config["SESSION_COOKIE_NAME"]="myCOOKIE_MONster52"
@@ -15,6 +21,7 @@ def index():
 
 @app.route("/add_items", methods=["post"])
 def add_item():
+    added_item = request.form["my_selection"]
     session["shopping_items"].append(request.form["my_selection"])
     session["shopping_items"]= session["shopping_items"]
     return render_template("index.html",all_items=session["all_items"],
